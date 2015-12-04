@@ -1,2 +1,2 @@
-# formCheak
+# formCheck
 表单验证插件，用于在失去焦点时触发显示提示信息

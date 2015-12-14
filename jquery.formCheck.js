@@ -184,9 +184,6 @@
             ///////////////////////////////错误信息显示模块//////////////////////////////////////////////////////
             function showResult(){
                     var $tips=$(This).parents('.needCheck').find('.u-xg-tips');
-               // console.log($(This).parentsUntil('.needCheck'));
-                    console.log($tips);
-
                 if(obj.required){
                     if(($(This).attr('data-xg-res'))&&($(This).attr('data-xg-res'))!='isPass'){//判断条件如果没通过 则显示
                         $tips.text($(This).attr('data-xg-msg')).show();//显示提示;

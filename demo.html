@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="jquery.formCheck.js"></script>
+    <title></title>
+</head>
+<body>
+    <div class="needCheck">
+        <div>
+        <label>姓&nbsp;&nbsp;名</label>    <input  data-xg-msg="" class="demoName" type="text" name="name" value=""> <br>
+        <span class="u-xg-tips"></span>
+        </div>
+    </div>
+    
+</body>
+<script>
+
+  $('.demoName').formCheck(
+          {
+              checkModel:'passwordCheck',
+              required:false,
+              ref:/^(\d{6})$/,
+              msg:'密码只能为6位数字',
+              emptyMsg:'密码不能为空'
+
+          }
+  );
+ 
+</script>
+</html>

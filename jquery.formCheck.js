@@ -1,27 +1,22 @@
 /**
  * Created by ly-zhangxianggeng on 2015/11/17.
- * 0.7 参考成熟的功能，改善代码
- * 1.增加功能选项（是否为必选项验证）
- * 2.增加默认验证（是否为空）
- * 3.增加错误提示信息方式选择
- * 4.努力实现用户自定义方式
- * 0.8第一次使用，需要总结
- * 1.个人使用，验证模式较少不够完善，提供自定义模式
- * 2.重复代码过多，需要精简
- * 3.使用时，重复代码过多，需要优化
- * 本版本第一次引用到具体页面上汽车维修页面的表单验证
- * 1.增加是否为空验证方法
- * 2.实现用户自定义错误提示信息以及验证正则
  * 0.9更改内容
  * 1.去除重复代码
  * 2.结构合理化  -使用return的方法完成各函数间的数据传递，而不是使用全局变量
  * 3.调用方式增加回调函数
  * 4.对于返回提示消息的问题，是作为属性还是作为返回值？返回到的span为指定的错误显示
- * 5.增加显示错误优先级
+ * 5.增加显示错误优先级（忽略）
+ * 0.10发布前
+ * 1.结构合理化  -使用return的方法完成各函数间的数据传递，而不是使用全局变量
+ * 2.调用方式增加回调函数
+ * 3.增加验证方式，提交时验证，首个错误的信息，并提示 实现
+ * 4.插件增加返回值，通过返回true 否则返回false $(this).get(0).resultBool)
+ * 4.非必选项判断，只要是空和正确都是pass？
+ * 5.如果是按钮验证，都不填就提交，如何判断？按钮时对所有进行判断，最后再做一次判断，在第一个错误的地方停下来 实现
  */
 ;(function($) {
     $.fn.formCheck = function(options) {
-        return this.each(function () {
+        return this.each(function (index,el) {
             // 这里开始写功能需求
             //重写默认值信息
             var defaultOptions={
@@ -88,21 +83,38 @@
             var s='';
             var refSelf=obj.ref;
             var This=this;
-
+            var resultBool=false;//默认返回值为false;
+            $(This).attr('data-xg-res','');
             //触发验证方式
             $(This).on('click',function(){
                 isPass=false;
                 isEmpty=false;
                 typeError=false;
                 s='';
-               // obj.clearError();
                 $(This).attr('data-xg-msg','验证中,请稍后...') ;
-               // console.log(obj.checkModel);
             });
             $(This).on('blur',function(){
                 forCheck();
+                beResult();
                 showResult();
+                 
             });
+             $('.submitAll').on('click',function(){
+                var bb=$(this).parents('.needCheck').find('[data-xg-res]');
+                //提交验证，只在提交时获取所有的data-xg-res的值，在所有错误的后面显示，优先显示最上面的
+                forCheck();
+                beResult();
+                console.log(bb);
+                console.log(resultBool);
+                if(!resultBool){showResult();}
+                bb.each(function(index, el) {
+                    if(!$(el).get(0).resultBool){
+                        $(el).parents('.needCheck').find('.u-xg-tips').text($(el).attr('data-xg-msg')).show();
+                        return false;
+                    }
+                });
+            });
+           
             //判断是否为input框或者div,以获得目标验证字符串
             function thisTypeVal(){
                 if($(This).val().length>0){
@@ -184,22 +196,30 @@
             ///////////////////////////////错误信息显示模块//////////////////////////////////////////////////////
             function showResult(){
                     var $tips=$(This).parents('.needCheck').find('.u-xg-tips');
-                if(obj.required){
-                    if(($(This).attr('data-xg-res'))&&($(This).attr('data-xg-res'))!='isPass'){//判断条件如果没通过 则显示
-                        $tips.text($(This).attr('data-xg-msg')).show();//显示提示;
+                    if(resultBool){
+                        $tips.text($(This).attr('data-xg-msg')).hide();
                     }else{
-                        $tips.text($(This).attr('data-xg-msg')).hide();//隐藏提示;
+                        $tips.text($(This).attr('data-xg-msg')).show();
                     }
-                }else{
-                    if(($(This).attr('data-xg-res'))&&($(This).attr('data-xg-res'))=='typeError'){//判断条件如果没通过 则显示
-                        $tips.text($(This).attr('data-xg-msg')).show();//显示提示;
-                    }else{
-                        $tips.text($(This).attr('data-xg-msg')).hide();//隐藏提示;
-                    }
-                }
+                
             }
             ///////////////////////////////返回通过////////////////////////////////////////////////////////////////////
-
+            function beResult(){
+                if(obj.required){
+                    if(($(This).attr('data-xg-res'))&&($(This).attr('data-xg-res'))!='isPass'){//判断条件如果没通过 则标记值为false
+                        resultBool=false;
+                    }else{
+                        resultBool=true;
+                    }
+                }else{
+                    if(($(This).attr('data-xg-res'))&&($(This).attr('data-xg-res'))=='typeError'){//判断条件如果没通过 则标记值为false
+                        resultBool=false;
+                    }else{
+                        resultBool=true;
+                    }
+                }
+                $(This).get(0).resultBool=resultBool;
+            }
             /*去前后的空白符
              *
              * */
@@ -313,6 +333,9 @@
                     return false;
                 }
             }
+            // beResult();
+            // return resultBool;
         })
     };
+     
 })( jQuery );

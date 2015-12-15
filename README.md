@@ -1,4 +1,5 @@
 # formCheck
+Form validation plug-in, used to trigger the display when the focus is lost
 表单验证插件，用于在失去焦点时触发显示提示信息
 ###我可以做的
 1.在引用插件之前，须引用jQuery文件  
@@ -54,3 +55,61 @@ $('.demoName').formCheck(
 
 ###重要
 触发方式为失去焦点！
+
+###如下方式可在一个对象的点击事件中触发 ---同一个提示框 
+
+html代码
+```
+<div class="needCheck">
+  <label>I&nbsp;&nbsp;D</label>    <input  data-xg-msg="" class="demoId" type="text" name="name" value=""> <br>
+  <label>电&nbsp;&nbsp;话</label>    <input  data-xg-msg="" class="demoPhone" type="text" name="name" value=""> <br>
+  <span class="u-xg-tips"></span><br>
+  <a class="submitAll">确定</a>
+</div>
+```
+
+###如下方式可在一个对象的点击事件中触发 ---分别有提示框   
+html代码
+```
+<div class="needCheck">
+  <label>电&nbsp;&nbsp;话</label>    <input  data-xg-msg="" class="demoPhone" type="text" name="name" value=""> <br>
+  <span class="u-xg-tips"></span><br>
+</div>
+<div class="needCheck">
+  <label>I&nbsp;&nbsp;D</label>    <input  data-xg-msg="" class="demoId" type="text" name="name" value=""> <br>
+  <span class="u-xg-tips"></span><br>
+</div>
+<div class="needCheck">
+  <a class="submitAll">确定</a>
+</div>
+```
+js代码相同为  
+
+```
+$('.demoPhone').formCheck(
+   {
+      checkModel:'phoneCheck',
+      msg:'手机为13位位数字',
+      emptyMsg:'手机号不能为空'
+   }
+);
+$('.demoId').formCheck(
+   {
+      checkModel:'IDCheck',
+      msg:'ID为18位位数字',
+      emptyMsg:'ID不能为空'
+   }
+);
+```
+
+提示框会显示第一个未通过的信息  
+
+```
+$(this).get(0).resultBool
+```
+中保存该项是否通过的布尔值
+
+###重要
+暂不支持同一页面有两个确认按钮
+>更改提交按钮的选择方式即可，下一个版本更新
+
